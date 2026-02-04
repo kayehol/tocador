@@ -1,6 +1,9 @@
 #include "miniaudio.h"
 #include <libgen.h>
 #include <ncurses.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void init_ncurses() {
   initscr();
@@ -9,24 +12,41 @@ void init_ncurses() {
   keypad(stdscr, TRUE);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   ma_result result;
   ma_engine engine;
   ma_sound sound;
-  char *path = "/home/kaye/Músicas/radar-punk/Crass - So What.mp3";
+  char *path = argv[1];
   char *filename = basename(path);
 
-  init_ncurses();
+  if (argc == 1) {
+    printf("Missing path argument\n");
+    return -1;
+  }
+
+  int file_exists = access(path, F_OK);
+  if (file_exists == -1) {
+    printf("File does not exist on path: %s\n", path);
+    return -1;
+  }
 
   result = ma_engine_init(NULL, &engine);
   if (result != MA_SUCCESS) {
-    return -1;
+    perror("Error on engine init");
+    exit(EXIT_FAILURE);
   }
 
   result = ma_sound_init_from_file(&engine, path, 0, NULL, NULL, &sound);
   if (result != MA_SUCCESS) {
-    return -1;
+    if (result == MA_INVALID_FILE) {
+      fprintf(stderr, "%s", "Invalid file\n");
+    } else {
+      fprintf(stderr, "Error code [%d]: %s", result, "Error on sound init");
+    }
+    exit(result);
   }
+
+  init_ncurses();
 
   ma_sound_start(&sound);
   printw("Playing %s\n", filename);
