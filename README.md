@@ -4,11 +4,6 @@ A minimalist command line music player.
 
 Educational  project.
 
-- Build
+- Build & run
 
-`sh build.sh`
-
-- Run
-
-`./tocador <path>`
-
+`make`
