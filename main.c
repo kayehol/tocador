@@ -13,6 +13,11 @@ void print_logo() {
   printw("\n");
 }
 
+void print_controls() {
+  printw("q - quit\n");
+  printw("[space] - play/pause\n");
+}
+
 void init_ncurses() {
   initscr();
   cbreak();
@@ -56,12 +61,11 @@ int main(int argc, char *argv[]) {
   }
 
   init_ncurses();
-
   ma_sound_start(&sound);
+
   print_logo();
   printw("Playing %s\n", filename);
-  printw("q - quit\n");
-  printw("[space] - play/pause\n");
+  print_controls();
 
   int input;
   int paused = 0;
@@ -78,8 +82,7 @@ int main(int argc, char *argv[]) {
       }
       paused = !paused;
     }
-    printw("q - quit\n");
-    printw("[space] - play/pause\n");
+    print_controls();
     refresh();
   }
   endwin();
