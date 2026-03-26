@@ -1,9 +1,17 @@
 #include "miniaudio.h"
 #include <libgen.h>
+#include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+void print_logo() {
+  printw("▄▄▄▄▄▄ ▄▄▄   ▄▄▄▄  ▄▄▄  ▄▄▄▄   ▄▄▄  ▄▄▄▄  \n");
+  printw("  ██  ██▀██ ██▀▀▀ ██▀██ ██▀██ ██▀██ ██▄█▄ \n");
+  printw("  ██  ▀███▀ ▀████ ██▀██ ████▀ ▀███▀ ██ ██ \n");
+  printw("\n");
+}
 
 void init_ncurses() {
   initscr();
@@ -13,6 +21,7 @@ void init_ncurses() {
 }
 
 int main(int argc, char *argv[]) {
+  setlocale(LC_ALL, "en_US.UTF-8");
   ma_result result;
   ma_engine engine;
   ma_sound sound;
@@ -49,6 +58,7 @@ int main(int argc, char *argv[]) {
   init_ncurses();
 
   ma_sound_start(&sound);
+  print_logo();
   printw("Playing %s\n", filename);
   printw("q - quit\n");
   printw("[space] - play/pause\n");
@@ -57,6 +67,7 @@ int main(int argc, char *argv[]) {
   int paused = 0;
   while ((input = getch()) != 'q') {
     clear();
+    print_logo();
     if (input == 32) {
       if (paused) {
         printw("Playing %s\n", filename);
